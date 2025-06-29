@@ -54,9 +54,9 @@ static void disable_signals() {
 }
 
 template<typename TransmissionType>
-void run_test(const int32_t physicalCpuNumber) {
+void run_test(const uint32_t physicalCpusNumber) {
     static_assert(sizeof(TransmissionType) <= 128,
-        "This test has been design to measure transmission for up to 2 cache lines. "
+        "This test has been designed to measure transmission for up to 2 cache lines. "
         "If you know what you're doing you can get rid of this static_assert");
 
     const std::string kTypeName = typeid(TransmissionType).name();
@@ -69,8 +69,8 @@ void run_test(const int32_t physicalCpuNumber) {
 
     static constexpr size_t kHandledTestMessages = 1024 * 1024;
 
-    for (int32_t fromCpuId = 0; fromCpuId < physicalCpuNumber; ++fromCpuId) {
-        for (int32_t toCpuId = 0; toCpuId < physicalCpuNumber; ++toCpuId) {
+    for (uint32_t fromCpuId = 0; fromCpuId < physicalCpusNumber; ++fromCpuId) {
+        for (uint32_t toCpuId = 0; toCpuId < physicalCpusNumber; ++toCpuId) {
             if (fromCpuId != toCpuId) {
                 auto latencies = CpuTransmissionLatencyTest<TransmissionType>{}.run(
                     kHandledTestMessages,
@@ -94,7 +94,7 @@ void run_test(const int32_t physicalCpuNumber) {
 int main() {
     disable_signals();
 
-    const auto physicalCpusNumber = static_cast<int32_t>(HwTopology{}.getPhysicalCpusNumber());
+    const uint32_t physicalCpusNumber = HwTopology{}.getPhysicalCpusNumber();
 
     run_test<CacheLine>(physicalCpusNumber);
     run_test<DoubleCacheLine>(physicalCpusNumber);

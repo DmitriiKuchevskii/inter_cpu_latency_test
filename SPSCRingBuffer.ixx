@@ -1,7 +1,3 @@
-//
-// Created by dkuch on 6/29/25.
-//
-
 module;
 
 #include <exception>
@@ -13,7 +9,7 @@ export module SPSCRingBuffer;
 export template <typename T>
 class SPMCRingBuffer {
 public:
-    SPMCRingBuffer(T *msgsMem, const size_t msgsSize)
+    SPMCRingBuffer(T *msgsMem, const uint64_t msgsSize)
             : m_msgs(msgsMem), m_maxMsgs(msgsSize) {
         // We want it to be a power of two for fast '%' operation
         if (!(m_maxMsgs > 0 && ((m_maxMsgs & (m_maxMsgs - 1)) == 0))) {
@@ -47,7 +43,7 @@ public:
 
 private:
     T *m_msgs{nullptr};
-    size_t m_msgsPos{0};
-    const size_t m_maxMsgs;
+    uint64_t m_msgsPos{0};
+    const uint64_t m_maxMsgs;
     std::atomic<int64_t> m_curSeq{-1};
 };

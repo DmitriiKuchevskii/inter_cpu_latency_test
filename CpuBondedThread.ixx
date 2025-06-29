@@ -9,7 +9,7 @@ export module CpuBondedThread;
 export class CpuBondedThread {
     std::jthread thread_;
 public:
-    explicit CpuBondedThread(const int cpuId, auto&& functor, auto&&... args) :
+    explicit CpuBondedThread(const uint32_t cpuId, auto&& functor, auto&&... args) :
         thread_{
             [&, this, cpuId]() {
                 cpu_set_t cpuSet;

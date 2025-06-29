@@ -8,16 +8,16 @@ module;
 export module LatenciesWriter;
 
 export void write_latencies(
-    const int32_t fromCpuId,
-    const int32_t toCpuId,
+    const uint32_t fromCpuId,
+    const uint32_t toCpuId,
     std::vector<uint64_t>&& latencies,
     const std::string& outFileName = "latencies.data"
 ) {
     std::ranges::sort(latencies);
 
     std::ofstream out(outFileName, std::ios::binary | std::ios::app);
-    out.write(reinterpret_cast<const char*>(&fromCpuId), sizeof(int32_t)); // Min
-    out.write(reinterpret_cast<const char*>(&toCpuId), sizeof(int32_t)); // Min
+    out.write(reinterpret_cast<const char*>(&fromCpuId), sizeof(uint32_t)); // Min
+    out.write(reinterpret_cast<const char*>(&toCpuId), sizeof(uint32_t)); // Min
 
     out.write(reinterpret_cast<const char*>(&latencies.front()), sizeof(uint64_t)); // Min
     for (size_t i = 1; i < 10; ++i) {

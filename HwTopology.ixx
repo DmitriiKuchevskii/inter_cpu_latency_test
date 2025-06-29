@@ -1,6 +1,3 @@
-//
-// Created by dkuch on 6/29/25.
-//
 module;
 
 #include <hwloc.h>
@@ -23,8 +20,8 @@ public:
         hwloc_topology_destroy(topology_);
     }
 
-    [[nodiscard]] auto getPhysicalCpusNumber() const {
-        if(const auto depth = hwloc_get_type_depth(topology_, HWLOC_OBJ_CORE); depth == HWLOC_TYPE_DEPTH_UNKNOWN) {
+    [[nodiscard]] uint32_t getPhysicalCpusNumber() const {
+        if(const int32_t depth = hwloc_get_type_depth(topology_, HWLOC_OBJ_CORE); depth == HWLOC_TYPE_DEPTH_UNKNOWN) {
             return std::thread::hardware_concurrency();
         } else {
             return hwloc_get_nbobjs_by_depth(topology_, depth);

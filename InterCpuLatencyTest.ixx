@@ -1,6 +1,3 @@
-//
-// Created by dkuch on 6/29/25.
-//
 module;
 #include <vector>
 #include <atomic>
@@ -11,7 +8,7 @@ import CpuBondedThread;
 
 export template <typename TransmissionType>
 class CpuTransmissionLatencyTest {
-    static constexpr size_t kWaitFreeQueueMemorySize = 1024 * 1024;
+    static constexpr uint64_t kWaitFreeQueueMemorySize = 1024 * 1024;
     std::vector<TransmissionType> waitFreeQueueMemory_;
     SPMCRingBuffer<TransmissionType> waitFreeQueue_;
     std::atomic<bool> producerRunning_{true};
@@ -22,12 +19,12 @@ public:
         waitFreeQueue_(waitFreeQueueMemory_.data(), waitFreeQueueMemory_.size())
     {}
 
-    std::vector<size_t> run(const size_t measuresNumber, const int fromCpuId, const int toCpuId) {
+    std::vector<uint64_t> run(const uint64_t measuresNumber, const uint32_t fromCpuId, const uint32_t toCpuId) {
         CpuBondedThread producerThread{fromCpuId, [this]() {
             runProducer();
         }};
 
-        std::vector<size_t> latencies(measuresNumber);
+        std::vector<uint64_t> latencies(measuresNumber);
         CpuBondedThread consumerThread{toCpuId, [this, &latencies]() {
             runConsumer(latencies);
         }};
@@ -36,8 +33,8 @@ public:
     }
 
 private:
-    void runConsumer(std::vector<size_t>& latencies) {
-        size_t messagesHandled = 0;
+    void runConsumer(std::vector<uint64_t>& latencies) {
+        uint64_t messagesHandled = 0;
         int64_t lastSeq = -1;
 
         while (messagesHandled != latencies.size()) {
