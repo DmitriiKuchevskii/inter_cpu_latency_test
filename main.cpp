@@ -22,7 +22,7 @@ struct __attribute__((packed)) CacheLine  {
             }
         }
     }
-    alignas(64) char data_[48]{};
+    char data_[48]{};
     uint64_t sec{};
     uint64_t nsec{};
 };

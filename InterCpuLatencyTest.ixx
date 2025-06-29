@@ -8,17 +8,11 @@ import CpuBondedThread;
 
 export template <typename TransmissionType>
 class CpuTransmissionLatencyTest {
-    static constexpr uint64_t kWaitFreeQueueMemorySize = 1024 * 1024;
-    std::vector<TransmissionType> waitFreeQueueMemory_;
-    SPMCRingBuffer<TransmissionType> waitFreeQueue_;
+    alignas(64) TransmissionType data_[1024];
+    SPMCRingBuffer<TransmissionType> waitFreeQueue_{data_, std::size(data_)};
     std::atomic<bool> producerRunning_{true};
 
 public:
-    explicit CpuTransmissionLatencyTest() :
-        waitFreeQueueMemory_(kWaitFreeQueueMemorySize),
-        waitFreeQueue_(waitFreeQueueMemory_.data(), waitFreeQueueMemory_.size())
-    {}
-
     std::vector<uint64_t> run(const uint64_t measuresNumber, const uint32_t fromCpuId, const uint32_t toCpuId) {
         CpuBondedThread producerThread{fromCpuId, [this]() {
             runProducer();
